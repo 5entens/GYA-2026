@@ -1,9 +1,21 @@
 <!-- dbconnection.php -->
 <?php
-$dbname = 'mindatabas';
-$hostname = 'localhost';
-$DB_USER = 'root';
-$DB_PASSWORD = '';
+
+$local = ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1');
+
+include 'config.php';
+
+if ($local) {
+  $dbname = $db_name_local;
+  $hostname = $db_hostname_local;
+  $DB_USER = $db_user_local;
+  $DB_PASSWORD = $db_password_local;
+} else {
+  $dbname = $db_name_prod;
+  $hostname = $db_hostname_prod;
+  $DB_USER = $db_user_prod;
+  $DB_PASSWORD = $db_password_prod;
+}
 $options  = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'");
 
 try {
