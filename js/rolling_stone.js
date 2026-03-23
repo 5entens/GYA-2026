@@ -1,0 +1,90 @@
+function loadR_s(level) {
+  // Töm alla gamla lådor
+  r_s.length = 0;
+
+  // Starta om kollen för spelarens trigger position
+  player.r_sTriggered = false;
+
+  // Loopa igenom världen och skapa lådor där det finns "4"
+  for (let y = 0; y < world[level].length; y++) {
+    for (let x = 0; x < world[level][y].length; x++) {
+      if (world[level][y][x] === "r") {
+        r_s.push({
+          x: x * tile_size * 1.2,
+          y: y * tile_size * 1.2,
+          width: tile_size * 1.6,
+          height: tile_size * 1.6,
+          speed: 0,
+          is_moving: false
+        });
+      }
+    }
+  }
+}
+
+// Ritar lådan på spelplanen
+function drawR_s() {
+  for (i = 0; i < r_s.length; i++) {
+    make_base(r_sTextures[current_img], r_s[i].x, r_s[i].y, r_s[i].width, r_s[i].height);
+  }
+}
+
+// Flyttar på stenen
+function moveR_s() {
+
+  // Kollar om spelaren passerat gränsen för att aktivera stenen
+  if ((player.x < tile_size * 5 && player.x >= tile_size * 2) && (player.y < tile_size * 4 && player.y >= tile_size * 3)) {
+    player.r_sTriggered = true;
+  }
+
+  for (let i = 0; i < r_s.length; i++) {
+    if (player.x > tile_size * 6 && player.r_sTriggered) {
+      r_s[i].is_moving = true;
+
+      if (r_s[i].x >= canvas.canvas.width - tile_size * 1.75) {
+        r_s[i].is_moving = false;
+        r_s[i].speed = 0;
+      }
+    }
+
+    // Flyttar stenen mot väggen
+    if (r_s[i].is_moving) {
+      r_s[i].x += r_s[i].speed;
+
+
+      // Växlar stenens animation
+      if (animation_cooldown >= 12) {
+        if (current_img < 5) {
+          current_img ++;
+        } else {
+          current_img = 1;
+        }
+        animation_cooldown = 0;
+      } else{
+        animation_cooldown ++;
+      }
+
+      // Resettar spelaren vid kollision
+      if (player.x < (r_s[i].x + r_s[i].width) && player.x + player.width > (r_s[i].x) && player.y < (r_s[i].y + r_s[i].height) && player.y + player.height > (r_s[i].y) && r_s[i].is_moving) {
+        player.x = tile_size * 3;
+        player.y = tile_size * 5;
+        load();
+      }
+      // Spelaren kan kollidera med den rullande stenen utan fara
+    } else {
+      if (player.x < (r_s[i].x + r_s[i].width) && player.x + player.width > (r_s[i].x) && (player.y < (r_s[i].y + r_s[i].height) && player.y + player.height > (r_s[i].y)) && !r_s[i].is_moving) {
+        player.x -= player.dx * player.speed;
+        player.y -= player.dy * player.speed;
+      };
+    };
+  }
+
+  // Ändrar r_s hastighet beroende på skärmtyp
+  for (i = 0; i < r_s.length; i++) {
+    if (screenType == "pc") {
+      r_s[i].speed = 1.6;
+    } else {
+      r_s[i].speed = 1;
+    }
+  }
+}

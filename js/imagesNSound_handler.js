@@ -1,0 +1,59 @@
+// Laddar alla bilder när spelet startar
+const loadImages = {};
+
+// Mapping för väggtyper (1-14) till textur-filer
+const wallTextures = {
+  "b": "../bilder/bookshelf.png"
+};
+
+// Laddar in bakgrunds texturerna
+const bgTextures = {};
+for(let i = 1; i < 9; i++) {
+  bgTextures[i] = "../bilder/backgrounds/background_"+i+".png";
+}
+
+// Laddar in vägg texturerna
+for(let i = 1; i < 19; i++) {
+  wallTextures[i] = "../bilder/wall_tile-set/wall_tile-set"+i+".png";
+}
+
+// Laddar in rolling stone texturerna
+const r_sTextures = {};
+for(let i = 1; i < 6; i++) {
+  r_sTextures[i] = "../bilder/rolling_stone/rolling_stone"+i+".png";
+}
+
+const gateTextures = [
+  "../bilder/gate1.png",
+  "../bilder/gate2.png"
+]
+
+// Laddar in spelarmodellen
+const playerTextures = {};
+const playerUpNDown = {};
+for(let i = 1; i < 10; i++) {
+  playerTextures[i] = "../bilder/playerFront/playerFront"+i+".png";
+}
+
+for(let i = 1; i < 5; i++) {
+  playerUpNDown[i] = "../bilder/playerUpNDown/playerUpNDown"+i+".png";
+}
+
+// Laddar in statyn
+const statue = "../bilder/two_friends_statue.png"
+
+function preloadImage(src) {
+  // Om filen inte finns i arrayen, skapa ny och lägg i arrayen
+  if (!loadImages[src]) {
+    let img = new Image();
+    img.src = src;
+    loadImages[src] = img;
+  }
+  return loadImages[src];
+}
+
+// Ritar bilderna på objekten
+function make_base(src, x, y, width, height){
+  let base_image = preloadImage(src);
+  canvas.drawImage(base_image, x, y, width, height);
+}
